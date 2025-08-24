@@ -180,9 +180,8 @@ def tool5():
 def main_screen():
     st.markdown("<h1 style='text-align: center;'>WedSec Mini</h1>", unsafe_allow_html=True)
     
-    # Logo yükleme
     try:
-        file_ = open("WedSec Mini.png", "rb")
+        file_ = open("WedSec-Mini.png", "rb")
         contents = file_.read()
         file_.close()
         data_url = base64.b64encode(contents).decode("utf-8")
@@ -198,7 +197,6 @@ def main_screen():
     except:
         st.warning("Logo bulunamadı. 'WedSec Mini.png' dosyasını eklemeyi unutmayın.")
 
-    # Hoş geldiniz
     st.markdown(
         """
         <div style='text-align: center; font-size: 18px; line-height: 1.6; margin-bottom: 40px;'>
@@ -213,7 +211,6 @@ def main_screen():
         unsafe_allow_html=True
     )
 
-    # Araçlar - kart görünümü
     st.markdown(
         """
         <h3 style="text-align:center;">🚀 Hangi Araçlar Mevcut?</h3>
@@ -243,7 +240,6 @@ def main_screen():
         unsafe_allow_html=True
     )
 
-    # Neden WedSec Mini
     st.markdown(
         """
         <div style='margin-top:40px; font-size:16px; line-height:1.6;'>
@@ -257,7 +253,6 @@ def main_screen():
         unsafe_allow_html=True
     )
 
-    # Kullanım Notu
     st.markdown(
         """
         <div style='margin-top:40px; padding:15px; border-radius:10px; background:#fff3f3; border:1px solid #ffcccc;'>
