@@ -195,7 +195,7 @@ def main_screen():
             unsafe_allow_html=True
         )
     except:
-        st.warning("Logo bulunamadı. 'WedSec Mini.png' dosyasını eklemeyi unutmayın.")
+        st.warning("Logo bulunamadı. 'WedSec-Mini.png' dosyasını eklemeyi unutmayın.")
 
     st.markdown(
         """
@@ -268,7 +268,7 @@ def main_screen():
         unsafe_allow_html=True
     )
 
-st.set_page_config(page_title="WedSec Mini", page_icon="WedSec Mini.png", layout="wide")
+st.set_page_config(page_title="WedSec Mini", page_icon="WedSec-Mini.png", layout="wide")
 st.sidebar.title("Kontrol Paneli")
 
 if "selected_tool" not in st.session_state:
