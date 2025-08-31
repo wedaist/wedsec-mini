@@ -177,11 +177,92 @@ def tool5():
         else:
             st.info("Hiçbir subdomain bulunamadı.")
 
+rows = [
+    "qwertyuıopğü",
+    "asdfghjklşi",
+    "zxcvbnmöç"
+]
+char_to_row = {ch: row for row in rows for ch in row}
+
+lower_letters = "abcçdefgğhıijklmnoöprsştuüvyzxqw"
+upper_letters = "ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZXQW"
+
+def to_lower(ch):
+    if ch in upper_letters:
+        return lower_letters[upper_letters.index(ch)]
+    return ch
+
+def to_upper(ch):
+    if ch in lower_letters:
+        return upper_letters[lower_letters.index(ch)]
+    return ch
+
+def shift_char(ch, mode):
+    ch_lower = to_lower(ch)
+    if ch_lower not in char_to_row:
+        return ch
+    row = char_to_row[ch_lower]
+    idx = row.index(ch_lower)
+    if mode == "right":
+        new_idx = (idx + 1) % len(row)
+    else:
+        new_idx = (idx - 1) % len(row)
+    new_ch = row[new_idx]
+    return to_upper(new_ch) if ch.isupper() else new_ch
+
+def process(text, encode=True):
+    """
+    - Only characters that exist in `char_to_row` are shifted and count towards the parity index.
+    - Any other characters (spaces, newlines, punctuation, digits, etc.) are preserved and DO NOT
+      change the encoding parity.
+    """
+    result = ""
+    idx_count = 0
+    for ch in text:
+        ch_lower = to_lower(ch)
+        # Preserve characters that are not in mapping and DON'T increment idx_count
+        if ch_lower not in char_to_row:
+            result += ch
+            continue
+
+        row = char_to_row[ch_lower]
+        idx = row.index(ch_lower)
+
+        if idx_count % 2 == 0:
+            new_idx = (idx + 1) % len(row) if encode else (idx - 1) % len(row)
+        else:
+            new_idx = (idx - 1) % len(row) if encode else (idx + 1) % len(row)
+
+        new_ch = row[new_idx]
+        result += to_upper(new_ch) if ch.isupper() else new_ch
+        idx_count += 1
+
+    return result
+
+# ------------------ WedCrypt Tool ------------------
+def tool6():
+    st.title("🔑 WedCrypt Şifreleme Aracı")
+    tab1, tab2 = st.tabs(["🔏 Encode (Şifrele)", "🔓 Decode (Çöz)"])
+
+    with tab1:
+        st.subheader("Metni Şifrele")
+        plain = st.text_area("Metin giriniz:", "")
+        if st.button("Şifrele", key="encode"):
+            if plain:
+                encoded = process(plain, encode=True)
+                st.success(f"Şifreli Metin:\n\n{encoded}")
+
+    with tab2:
+        st.subheader("Metni Çöz")
+        coded = st.text_area("Şifreli metin giriniz:", "")
+        if st.button("Çöz", key="decode"):
+            if coded:
+                decoded = process(coded, encode=False)
+                st.success(f"Çözülen Metin:\n\n{decoded}")
+
 def main_screen():
-    st.markdown("<h1 style='text-align: center;'>WedSec Mini</h1>", unsafe_allow_html=True)
-    
     try:
-        file_ = open("WedSec-Mini.png", "rb")
+        file_ = open("WedSec-Mini-B.png", "rb")
         contents = file_.read()
         file_.close()
         data_url = base64.b64encode(contents).decode("utf-8")
@@ -189,13 +270,13 @@ def main_screen():
         st.markdown(
             f"""
             <div style='text-align: center; margin-bottom:20px;'>
-                <img src="data:image/png;base64,{data_url}" width="200">
+                <img src="data:image/png;base64,{data_url}" width="500">
             </div>
             """,
             unsafe_allow_html=True
         )
     except:
-        st.warning("Logo bulunamadı. 'WedSec-Mini.png' dosyasını eklemeyi unutmayın.")
+        st.warning("Logo bulunamadı. 'WedSec-Mini-B.png' dosyasını eklemeyi unutmayın.")
 
     st.markdown(
         """
@@ -235,6 +316,10 @@ def main_screen():
                 <b>🛡️ Subdomain Tarama</b><br>
                 Belirlenen domain üzerinde subdomain araması yaparak ek servis ve giriş noktalarını keşfedin.
             </div>
+            <div style="padding: 15px; border: 1px solid #ddd; border-radius: 12px; background: #f9f9f9; box-shadow: 2px 2px 8px rgba(0,0,0,0.05);">
+                <b>🔐 WedCrypt</b><br>
+                Klavye tabanlı özel algoritma ile metinlerinizi şifreleyin ve çözün.
+            </div>
         </div>
         """,
         unsafe_allow_html=True
@@ -267,6 +352,22 @@ def main_screen():
         """,
         unsafe_allow_html=True
     )
+    try:
+        file_ = open("WedSec-Mini-C.png", "rb")
+        contents = file_.read()
+        file_.close()
+        data_url = base64.b64encode(contents).decode("utf-8")
+
+        st.markdown(
+            f"""
+            <div style='text-align: center; margin-top:20px;'>
+                <img src="data:image/png;base64,{data_url}" width="430">
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+    except:
+        st.warning("Logo bulunamadı. 'WedSec-Mini-C.png' dosyasını eklemeyi unutmayın.")
 
 st.set_page_config(page_title="WedSec Mini", page_icon="WedSec-Mini.png", layout="wide")
 st.sidebar.title("Kontrol Paneli")
@@ -286,6 +387,8 @@ if st.sidebar.button("📡 Port Tarama"):
     st.session_state.selected_tool = "tool4"
 if st.sidebar.button("🛡️ Subdomain Tarama"):
     st.session_state.selected_tool = "tool5"
+if st.sidebar.button("🔐 WedCrypt"):
+    st.session_state.selected_tool = "tool6"
 
 if st.session_state.selected_tool == "main":
     main_screen()
@@ -299,3 +402,5 @@ elif st.session_state.selected_tool == "tool4":
     tool4()
 elif st.session_state.selected_tool == "tool5":
     tool5()
+elif st.session_state.selected_tool == "tool6":
+    tool6()
